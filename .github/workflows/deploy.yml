@@ -66,9 +66,9 @@ jobs:
       # Documenter.jlのインストール
       - name: Install Julia dependencies
         run: |
-          cd docs
-          julia --project=. -e '
+          julia --project=docs -e '
             using Pkg
+            Pkg.develop(PackageSpec(path=pwd()))
             Pkg.instantiate()
             Pkg.status()
           '
