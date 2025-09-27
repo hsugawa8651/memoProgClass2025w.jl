@@ -1,0 +1,20 @@
+{
+  "name": "documenter-shiki-integration",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Shiki integration for Documenter.jl",
+  "scripts": {
+    "build-shiki": "node build-shiki.js",
+    "build-docs": "pnpm run build-shiki && julia --project=docs docs/make.jl",
+    "dev": "pnpm run build-shiki && julia --project=docs --color=yes docs/make.jl",
+    "clean": "rm -rf docs/build docs/src/assets/shiki-*.css"
+  },
+  "devDependencies": {
+    "shiki": "^1.22.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
