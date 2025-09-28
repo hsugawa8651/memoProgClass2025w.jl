@@ -3,10 +3,10 @@ CurrentModule = memoProgClass2025w
 ```
 
 
-# 2024年度版
+# 2025年度版
 
-この内容は，2024年度後期の授業（2024年10月から2025年1月）向けに公開するものです．
-- 実行結果は，Julia 1.10以上 （→ [FAQ: Julia Releases](https://docs.julialang.org/en/v1/manual/faq/#Julia-Releases) ）により出力されたものです．
+この内容は，2025年度後期の授業（2025年10月から2026年1月）向けに公開するものです．
+- 実行結果は，Julia 1.11以上 （→ [FAQ: Julia Releases](https://docs.julialang.org/en/v1/manual/faq/#Julia-Releases) ）により出力されたものです．
 
 ## Preface
 
@@ -40,15 +40,4 @@ Pages=[
 	"ch14.md"
 ]
 Depth = 1:4
-```
-
-```@comments
-## Appendices
-```
-
-```@comments
-Pages=[
-	"ch0a.md",
-	"ch0b.md"
-]
 ```
