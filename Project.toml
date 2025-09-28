@@ -1,9 +1,13 @@
 name = "memoProgClass2025w"
 uuid = "2100699d-cf25-4b70-adfa-a5e2e0298198"
 authors = ["Hiroharu Sugawara <hsugawa@gmail.com>"]
-version = "0.1.0"
+version = "0.2.1"
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 
 [compat]
+CSV = "0.10.15"
 julia = "1.10"
 
 [extras]

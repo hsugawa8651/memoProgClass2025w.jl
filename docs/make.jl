@@ -46,6 +46,8 @@ makedocs(;
     ],
 )
 
+add_shiki_assets("docs/build")
+
 deploydocs(;
     repo="github.com/hsugawa8651/memoProgClass2025w.jl",
     devbranch="main",
