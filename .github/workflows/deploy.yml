@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - rev2024w
+      - rev2025w
   workflow_dispatch:  # 手動実行も可能
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
