@@ -213,6 +213,14 @@ html.theme--documenter-dark pre code {
 }
 
 /* Documenterテーマとの統合 */
+
+/* ライトテーマ */
+html.theme--light .shiki,
+html.theme--documenter-light .shiki {
+    color: #000000;  /* デフォルトテキストカラーを黒に */
+}
+
+/* ダークテーマ */
 html.theme--dark .shiki-loading,
 html.theme--documenter-dark .shiki-loading {
     background: #0d1117;
@@ -223,6 +231,7 @@ html.theme--documenter-dark .shiki-loading {
 html.theme--dark .shiki,
 html.theme--documenter-dark .shiki {
     border-color: #30363d;
+    color: #ffffff;  /* デフォルトテキストカラーを白に */
 }
 
 /* Shikiのテーマが提供する色をそのまま使用 - キーワードと数字はそのまま */
@@ -389,8 +398,6 @@ html.theme--documenter-dark .shiki .copy-button:hover {
 .shiki .line.highlighted,
 .shiki .highlight-level-1 {
     background-color: rgba(255, 255, 0, 0.1);
-    display: inline-block;
-    width: 100%;
     position: relative;
 }
 
@@ -410,8 +417,6 @@ html.theme--documenter-dark .shiki .copy-button:hover {
 /* レベル2 (赤色) */
 .shiki .highlight-level-2 {
     background-color: rgba(255, 100, 100, 0.15);
-    display: inline-block;
-    width: 100%;
     position: relative;
 }
 
@@ -431,8 +436,6 @@ html.theme--documenter-dark .shiki .copy-button:hover {
 /* レベル3 (緑色) */
 .shiki .highlight-level-3 {
     background-color: rgba(100, 255, 100, 0.15);
-    display: inline-block;
-    width: 100%;
     position: relative;
 }
 
@@ -450,8 +453,6 @@ html.theme--documenter-dark .shiki .copy-button:hover {
 /* レベル4 (青色) */
 .shiki .highlight-level-4 {
     background-color: rgba(100, 150, 255, 0.15);
-    display: inline-block;
-    width: 100%;
     position: relative;
 }
 
@@ -472,9 +473,7 @@ html.theme--dark .shiki .line.highlighted,
 html.theme--dark .shiki .highlight-level-1 ,
 html.theme--documenter-dark .shiki .highlight-level-1 {
     /* レベル1: 黄色系 - 行全体に薄い背景色 */
-    background-color: rgba(255, 234, 0, 0.1);
-    display: inline-block;
-    width: 100%;
+    background-color: rgba(200, 180, 0, 0.15);
     position: relative;
 }
 
@@ -488,7 +487,7 @@ html.theme--documenter-dark .shiki .highlight-level-1::before {
     right: -16px;
     top: 0;
     bottom: 0;
-    background-color: rgba(255, 234, 0, 0.1);
+    background-color: rgba(200, 180, 0, 0.15);
     z-index: -1;
 }
 
@@ -497,9 +496,7 @@ html.theme--documenter-dark .shiki .highlight-level-1::before {
 html.theme--dark .shiki .highlight-level-2 ,
 html.theme--documenter-dark .shiki .highlight-level-2 {
     /* レベル2: 赤系 - 行全体に薄い背景色 */
-    background-color: rgba(255, 95, 109, 0.1);
-    display: inline-block;
-    width: 100%;
+    background-color: rgba(200, 80, 80, 0.15);
     position: relative;
 }
 
@@ -511,7 +508,7 @@ html.theme--documenter-dark .shiki .highlight-level-2::before {
     right: -16px;
     top: 0;
     bottom: 0;
-    background-color: rgba(255, 95, 109, 0.1);
+    background-color: rgba(200, 80, 80, 0.15);
     z-index: -1;
 }
 
@@ -519,9 +516,7 @@ html.theme--documenter-dark .shiki .highlight-level-2::before {
 html.theme--dark .shiki .highlight-level-3 ,
 html.theme--documenter-dark .shiki .highlight-level-3 {
     /* レベル3: 緑系 - 行全体に薄い背景色 */
-    background-color: rgba(95, 255, 135, 0.1);
-    display: inline-block;
-    width: 100%;
+    background-color: rgba(80, 180, 100, 0.15);
     position: relative;
 }
 
@@ -533,7 +528,7 @@ html.theme--documenter-dark .shiki .highlight-level-3::before {
     right: -16px;
     top: 0;
     bottom: 0;
-    background-color: rgba(95, 255, 135, 0.1);
+    background-color: rgba(80, 180, 100, 0.15);
     z-index: -1;
 }
 
@@ -541,9 +536,7 @@ html.theme--documenter-dark .shiki .highlight-level-3::before {
 html.theme--dark .shiki .highlight-level-4 ,
 html.theme--documenter-dark .shiki .highlight-level-4 {
     /* レベル4: 青系 - 行全体に薄い背景色 */
-    background-color: rgba(100, 181, 255, 0.1);
-    display: inline-block;
-    width: 100%;
+    background-color: rgba(80, 140, 200, 0.15);
     position: relative;
 }
 
@@ -555,7 +548,7 @@ html.theme--documenter-dark .shiki .highlight-level-4::before {
     right: -16px;
     top: 0;
     bottom: 0;
-    background-color: rgba(100, 181, 255, 0.1);
+    background-color: rgba(80, 140, 200, 0.15);
     z-index: -1;
 }
 
@@ -906,15 +899,15 @@ function generate_shiki_javascript(config)
                 
                 // 元の要素を置き換え
                 const parentPre = codeBlock.closest('pre');
-                if (parentPre) {
+                if (parentPre && parentPre.parentNode) {
                     parentPre.parentNode.replaceChild(shikiPre, parentPre);
-                } else {
+                } else if (codeBlock.parentNode) {
                     codeBlock.parentNode.replaceChild(shikiPre, codeBlock);
                 }
             }
             
         } catch (error) {
-            console.error('❌ Error highlighting code:', error);
+            console.error('❌ Error highlighting code:', error.message || error);
         }
     }
     
