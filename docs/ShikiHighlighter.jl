@@ -7,27 +7,27 @@ export shiki_html, add_shiki_assets
 """
     shiki_html(; theme="github-light", dark_theme="github-dark", languages=[...], kwargs...)
 
-Shikiハイライト機能付きのDocumenter.HTML()を返します。
-すべてのDocumenter.HTML()オプションをサポートします。
+Returns Documenter.HTML() with Shiki highlighting functionality.
+Supports all Documenter.HTML() options.
 
-# Shiki固有のオプション
-- `theme::String="github-light"`: デフォルトテーマ
-- `dark_theme::String="github-dark"`: ダークモード用テーマ  
-- `languages::Vector{String}`: サポートする言語のリスト
-- `cdn_url::String="https://esm.sh"`: ShikiライブラリのCDN URL
-- `load_themes::Vector{String}=String[]`: ロードするテーマのリスト
+# Shiki-specific options
+- `theme::String="github-light"`: Default theme
+- `dark_theme::String="github-dark"`: Theme for dark mode
+- `languages::Vector{String}`: List of supported languages
+- `cdn_url::String="https://esm.sh"`: CDN URL for Shiki library
+- `load_themes::Vector{String}=String[]`: List of themes to load
 
-# Documenter.HTMLオプション
-その他のキーワード引数はすべてDocumenter.HTML()に渡されます。
+# Documenter.HTML options
+All other keyword arguments are passed to Documenter.HTML().
 """
 function shiki_html(;
-    # Shiki固有オプション
+    # Shiki-specific options
     theme="github-light",
     dark_theme="github-dark",
     languages=["julia", "javascript", "python", "bash", "json", "yaml", "toml"],
     cdn_url="https://esm.sh",
     load_themes=String[],
-    # Documenter.HTMLの基本オプション
+    # Basic Documenter.HTML options
     prettyurls=true,
     disable_git=false,
     edit_link=nothing,
@@ -40,21 +40,21 @@ function shiki_html(;
     footer=nothing,
     ansicolor=false,
     warn_outdated=true,
-    prerender=true,  # highlight.jsの読み込みをスキップ
-    highlights=String[],  # 追加の言語なし
-    kwargs... # その他のDocumenter.HTMLオプション
+    prerender=true,  # Skip loading highlight.js
+    highlights=String[],  # No additional languages
+    kwargs... # Other Documenter.HTML options
 )
-    # load_themesが空の場合、themeとdark_themeを使用
+    # If load_themes is empty, use theme and dark_theme
     if isempty(load_themes)
         load_themes = unique([theme, dark_theme])
     end
 
-    # Shiki用アセットを追加（ルートディレクトリから読み込む）
+    # Add Shiki assets (loaded from root directory)
     shiki_assets = copy(assets)
     push!(shiki_assets, "shiki-plugin.css")
     push!(shiki_assets, "shiki-plugin.js")
 
-    # グローバルにShiki設定を保存（アセット生成で使用）
+    # Save Shiki configuration globally (used for asset generation)
     global SHIKI_CONFIG = (
         theme=theme,
         dark_theme=dark_theme,
@@ -63,7 +63,7 @@ function shiki_html(;
         load_themes=load_themes
     )
 
-    # 標準のDocumenter.HTML()を返す
+    # Return standard Documenter.HTML()
     return Documenter.HTML(;
         prettyurls=prettyurls,
         disable_git=disable_git,
@@ -83,23 +83,23 @@ function shiki_html(;
     )
 end
 
-# グローバル設定変数
+# Global configuration variable
 SHIKI_CONFIG = nothing
 
 """
     add_shiki_assets(build_dir::String)
 
-指定したビルドディレクトリにShikiのCSSとJavaScriptアセットを追加します。
-makedocs()の後に呼び出してください。
+Adds Shiki CSS and JavaScript assets to the specified build directory.
+Call this after makedocs().
 
-# 使用例
+# Usage example
 ```julia
 makedocs(
     sitename="My Documentation",
     format=shiki_html(theme="github-dark"),
     pages=["Home" => "index.md"]
 )
-add_shiki_assets("docs/build")  # ビルド後にアセットを追加
+add_shiki_assets("docs/build")  # Add assets after build
 ```
 """
 function add_shiki_assets(build_dir::String)
@@ -108,15 +108,15 @@ function add_shiki_assets(build_dir::String)
         return
     end
 
-    # ビルドディレクトリのルートにファイルを作成（Documenterの期待する場所）
+    # Create files in build directory root (where Documenter expects them)
     mkpath(build_dir)
 
-    # CSS ファイルを作成
+    # Create CSS file
     css_content = generate_shiki_css()
     css_path = joinpath(build_dir, "shiki-plugin.css")
     write(css_path, css_content)
 
-    # JavaScript ファイルを作成
+    # Create JavaScript file
     js_content = generate_shiki_javascript(SHIKI_CONFIG)
     js_path = joinpath(build_dir, "shiki-plugin.js")
     write(js_path, js_content)
@@ -127,13 +127,13 @@ end
 """
     generate_shiki_css()
 
-Shiki用のCSSスタイルを生成します。
+Generates CSS styles for Shiki.
 """
 function generate_shiki_css()
     return """
 /* Shiki Highlighter Plugin Styles */
 
-/* デフォルトのコードブロックスタイル（Shiki適用前） */
+/* Default code block styles (before Shiki is applied) */
 pre code {
     color: inherit !important;
     background: transparent !important;
@@ -199,7 +199,7 @@ html.theme--documenter-dark pre code {
     font-size: inherit;
 }
 
-/* ダークモード対応 */
+/* Dark mode support */
 @media (prefers-color-scheme: dark) {
     .shiki-loading {
         background: #0d1117;
@@ -212,15 +212,15 @@ html.theme--documenter-dark pre code {
     }
 }
 
-/* Documenterテーマとの統合 */
+/* Integration with Documenter themes */
 
-/* ライトテーマ */
+/* Light theme */
 html.theme--light .shiki,
 html.theme--documenter-light .shiki {
-    color: #000000;  /* デフォルトテキストカラーを黒に */
+    color: #000000;  /* Default text color to black */
 }
 
-/* ダークテーマ */
+/* Dark theme */
 html.theme--dark .shiki-loading,
 html.theme--documenter-dark .shiki-loading {
     background: #0d1117;
@@ -231,19 +231,19 @@ html.theme--documenter-dark .shiki-loading {
 html.theme--dark .shiki,
 html.theme--documenter-dark .shiki {
     border-color: #30363d;
-    color: #ffffff;  /* デフォルトテキストカラーを白に */
+    color: #ffffff;  /* Default text color to white */
 }
 
-/* Shikiのテーマが提供する色をそのまま使用 - キーワードと数字はそのまま */
-/* 変数名（i, j等の通常の識別子）のみを上書き */
+/* Use colors provided by Shiki theme as-is - keywords and numbers unchanged */
+/* Only override variable names (common identifiers like i, j, etc.) */
 
-/* ライトテーマ: 変数名を黒にする */
+/* Light theme: make variable names black */
 html.theme--light .shiki span[style*="color:#383A42"],
 html.theme--light .shiki span[style*="color:#383a42"] {
     color: #000000 !important;
 }
 
-/* ダークテーマ: 変数名を白にする */
+/* Dark theme: make variable names white */
 html.theme--dark .shiki span[style*="color:#383A42"],
 html.theme--dark .shiki span[style*="color:#383a42"],
 html.theme--documenter-dark .shiki span[style*="color:#383A42"],
@@ -251,94 +251,94 @@ html.theme--documenter-dark .shiki span[style*="color:#383a42"] {
     color: #ffffff !important;
 }
 
-/* ライトテーマで薄いテキストを濃くする */
+/* Darken light text in light theme */
 html.theme--light .shiki span[style*="color:#6F42C1"],
 html.theme--light .shiki span[style*="color:#6f42c1"] {
-    color: #5a32a3 !important;  /* より濃い紫 */
+    color: #5a32a3 !important;  /* Darker purple */
 }
 
 html.theme--light .shiki span[style*="color:#032F62"],
 html.theme--light .shiki span[style*="color:#032f62"] {
-    color: #022543 !important;  /* より濃い青 */
+    color: #022543 !important;  /* Darker blue */
 }
 
-/* ライトテーマのコメントを濃くする */
+/* Darken comments in light theme */
 html.theme--light .shiki span[style*="color:#A0A1A7"],
 html.theme--light .shiki span[style*="color:#a0a1a7"],
 html.theme--light .shiki span[style*="color:#969896"],
 html.theme--light .shiki span[style*="color:#8E908C"] {
-    color: #5a5d62 !important;  /* より濃いグレー */
+    color: #5a5d62 !important;  /* Darker gray */
 }
 
-/* ライトテーマの薄いグレーテキストを濃くする */
+/* Darken light gray text in light theme */
 html.theme--light .shiki span[style*="color:#383A42"],
 html.theme--light .shiki span[style*="color:#383a42"] {
-    color: #000000 !important;  /* 完全な黒 */
+    color: #000000 !important;  /* Pure black */
 }
 
-/* ライトテーマの識別子（灰色のテキスト）をコメントと同じ濃さにする */
+/* Make identifiers (gray text) same darkness as comments in light theme */
 html.theme--light .shiki span[style*="color:#959DA5"],
 html.theme--light .shiki span[style*="color:#959da5"],
 html.theme--light .shiki span[style*="color:#6A737D"],
 html.theme--light .shiki span[style*="color:#6a737d"] {
-    color: #5a5d62 !important;  /* コメントと同じ濃いグレー */
+    color: #5a5d62 !important;  /* Same dark gray as comments */
 }
 
-/* ライトテーマのデフォルト色の識別子も濃くする */
+/* Darken default color identifiers in light theme */
 html.theme--light .shiki span[style*="color:#24292E"],
 html.theme--light .shiki span[style*="color:#24292e"] {
-    color: #000000 !important;  /* 完全な黒 */
+    color: #000000 !important;  /* Pure black */
 }
 
-/* ライトテーマの変数名・関数名を濃くする */
+/* Darken variable/function names in light theme */
 html.theme--light .shiki span[style*="color:#E45649"],
 html.theme--light .shiki span[style*="color:#e45649"] {
-    color: #d73a49 !important;  /* より濃い赤 */
+    color: #d73a49 !important;  /* Darker red */
 }
 
 html.theme--light .shiki span[style*="color:#4078F2"],
 html.theme--light .shiki span[style*="color:#4078f2"] {
-    color: #0366d6 !important;  /* より濃い青 */
+    color: #0366d6 !important;  /* Darker blue */
 }
 
-/* ライトテーマの薄いピンク色を濃くする */
+/* Darken light pink in light theme */
 html.theme--light .shiki span[style*="color:#F97583"],
 html.theme--light .shiki span[style*="color:#f97583"] {
-    color: #000000 !important;  /* 完全な黒（識別子） */
+    color: #000000 !important;  /* Pure black (identifier) */
 }
 
-/* ライトテーマの薄い青を濃くする */
+/* Darken light blue in light theme */
 html.theme--light .shiki span[style*="color:#79B8FF"],
 html.theme--light .shiki span[style*="color:#79b8ff"],
 html.theme--light .shiki span[style*="color:#79B8ff"] {
-    color: #000000 !important;  /* 完全な黒（識別子） */
+    color: #000000 !important;  /* Pure black (identifier) */
 }
 
-/* ライトテーマの薄いグレーを濃くする */
+/* Darken light gray in light theme */
 html.theme--light .shiki span[style*="color:#E1E4E8"],
 html.theme--light .shiki span[style*="color:#e1e4e8"],
 html.theme--light .shiki span[style*="color:#E1E4e8"] {
-    color: #000000 !important;  /* 完全な黒 */
+    color: #000000 !important;  /* Pure black */
 }
 
-/* ライトテーマの薄い緑を濃くする */
+/* Darken light green in light theme */
 html.theme--light .shiki span[style*="color:#85E89D"],
 html.theme--light .shiki span[style*="color:#85e89d"] {
-    color: #22863a !important;  /* 濃い緑 */
+    color: #22863a !important;  /* Dark green */
 }
 
-/* ライトテーマの薄い紫を濃くする（one-lightテーマ） */
+/* Darken light purple in light theme (one-light theme) */
 html.theme--light .shiki span[style*="color:#B392F0"],
 html.theme--light .shiki span[style*="color:#b392f0"] {
-    color: #6f42c1 !important;  /* 濃い紫 */
+    color: #6f42c1 !important;  /* Dark purple */
 }
 
-/* 行番号サポート */
+/* Line number support */
 .shiki .line {
     min-height: 1.5em;
 }
 
-/* スクロールバーのスタイリング */
+/* Scrollbar styling */
 .shiki::-webkit-scrollbar {
     height: 8px;
 }
@@ -356,7 +356,7 @@ html.theme--light .shiki span[style*="color:#b392f0"] {
     background: rgba(0,0,0,0.3);
 }
 
-/* コピーボタン */
+/* Copy button */
 .shiki .copy-button {
     position: absolute;
     top: 8px;
@@ -393,7 +393,7 @@ html.theme--documenter-dark .shiki .copy-button:hover {
     background: rgba(13,17,23,1);
 }
 
-/* ハイライト行のスタイル - レベル1 (黄色) */
+/* Highlighted line styles - Level 1 (yellow) */
 .shiki .highlighted,
 .shiki .line.highlighted,
 .shiki .highlight-level-1 {
@@ -414,13 +414,13 @@ html.theme--documenter-dark .shiki .copy-button:hover {
     z-index: -1;
 }
 
-/* レベル2 (赤色) */
+/* Level 2 (red) */
 .shiki .highlight-level-2 {
     background-color: rgba(255, 100, 100, 0.15);
     position: relative;
 }
 
-/* ハイライト行でも通常の文字色ルールを適用 */
+/* Apply normal text color rules even for highlighted lines */
 
 .shiki .highlight-level-2::before {
     content: '';
@@ -433,7 +433,7 @@ html.theme--documenter-dark .shiki .copy-button:hover {
     z-index: -1;
 }
 
-/* レベル3 (緑色) */
+/* Level 3 (green) */
 .shiki .highlight-level-3 {
     background-color: rgba(100, 255, 100, 0.15);
     position: relative;
@@ -450,7 +450,7 @@ html.theme--documenter-dark .shiki .copy-button:hover {
     z-index: -1;
 }
 
-/* レベル4 (青色) */
+/* Level 4 (blue) */
 .shiki .highlight-level-4 {
     background-color: rgba(100, 150, 255, 0.15);
     position: relative;
@@ -467,12 +467,12 @@ html.theme--documenter-dark .shiki .copy-button:hover {
     z-index: -1;
 }
 
-/* ダークモードでのハイライト - 行全体の背景色変更 */
+/* Highlights in dark mode - background color for entire line */
 html.theme--dark .shiki .highlighted,
 html.theme--dark .shiki .line.highlighted,
 html.theme--dark .shiki .highlight-level-1 ,
 html.theme--documenter-dark .shiki .highlight-level-1 {
-    /* レベル1: 黄色系 - 行全体に薄い背景色 */
+    /* Level 1: yellowish - light background for entire line */
     background-color: rgba(200, 180, 0, 0.15);
     position: relative;
 }
@@ -491,11 +491,11 @@ html.theme--documenter-dark .shiki .highlight-level-1::before {
     z-index: -1;
 }
 
-/* ハイライト行でも通常の色ルールを使用（フィルタなし） */
+/* Use normal color rules for highlighted lines (no filter) */
 
 html.theme--dark .shiki .highlight-level-2 ,
 html.theme--documenter-dark .shiki .highlight-level-2 {
-    /* レベル2: 赤系 - 行全体に薄い背景色 */
+    /* Level 2: reddish - light background for entire line */
     background-color: rgba(200, 80, 80, 0.15);
     position: relative;
 }
@@ -515,7 +515,7 @@ html.theme--documenter-dark .shiki .highlight-level-2::before {
 
 html.theme--dark .shiki .highlight-level-3 ,
 html.theme--documenter-dark .shiki .highlight-level-3 {
-    /* レベル3: 緑系 - 行全体に薄い背景色 */
+    /* Level 3: greenish - light background for entire line */
     background-color: rgba(80, 180, 100, 0.15);
     position: relative;
 }
@@ -535,7 +535,7 @@ html.theme--documenter-dark .shiki .highlight-level-3::before {
 
 html.theme--dark .shiki .highlight-level-4 ,
 html.theme--documenter-dark .shiki .highlight-level-4 {
-    /* レベル4: 青系 - 行全体に薄い背景色 */
+    /* Level 4: bluish - light background for entire line */
     background-color: rgba(80, 140, 200, 0.15);
     position: relative;
 }
@@ -553,7 +553,7 @@ html.theme--documenter-dark .shiki .highlight-level-4::before {
 }
 
 
-/* 差分表示のスタイル（オプション） */
+/* Diff display styles (optional) */
 .shiki .diff.add {
     background-color: rgba(46, 160, 67, 0.15);
 }
@@ -572,7 +572,7 @@ html.theme--documenter-dark .shiki .diff.remove {
     background-color: rgba(248, 81, 73, 0.2);
 }
 
-/* Catppuccinテーマを設定メニューから隠す */
+/* Hide Catppuccin themes from settings menu */
 #documenter-themepicker option[value="catppuccin-latte"],
 #documenter-themepicker option[value="catppuccin-frappe"],
 #documenter-themepicker option[value="catppuccin-macchiato"],
@@ -585,7 +585,7 @@ end
 """
     generate_shiki_javascript(config)
 
-Shiki用のJavaScriptコードを生成します。
+Generates JavaScript code for Shiki.
 """
 function generate_shiki_javascript(config)
     themes_json = join(["\"$theme\"" for theme in config.load_themes], ", ")
@@ -611,10 +611,10 @@ function generate_shiki_javascript(config)
     console.log('🎨 ShikiHighlighter initialized');
     console.log('📋 Config:', SHIKI_CONFIG);
     
-    // Transformersを格納する変数
+    // Variable to store transformers
     let shikiTransformers = null;
-    
-    // Shikiの動的インポート
+
+    // Dynamic import of Shiki
     async function loadShiki() {
         if (shikiHighlighter) return shikiHighlighter;
         if (isLoading) return loadingPromise;
@@ -625,11 +625,11 @@ function generate_shiki_javascript(config)
             try {
                 console.log('📦 Loading Shiki highlighter and transformers...');
                 
-                // ES Modules形式でShikiとTransformersをロード
+                // Load Shiki and Transformers in ES Modules format
                 const shiki = await import(`\${SHIKI_CONFIG.cdnUrl}/shiki@1.22.2`);
                 const transformersModule = await import(`\${SHIKI_CONFIG.cdnUrl}/@shikijs/transformers@1.22.2`);
-                
-                // Transformersを保存
+
+                // Save transformers
                 shikiTransformers = transformersModule;
                 
                 shikiHighlighter = await shiki.createHighlighter({
@@ -651,12 +651,12 @@ function generate_shiki_javascript(config)
         return loadingPromise;
     }
     
-    // テーマ検出
+    // Theme detection
     function getCurrentTheme() {
-        // Documenterのテーマをチェック
+        // Check Documenter theme
         const htmlElement = document.documentElement;
 
-        // 複数のダークテーマクラスをチェック
+        // Check multiple dark theme classes
         const isDark = htmlElement.classList.contains('theme--dark') ||
                       htmlElement.classList.contains('theme--documenter-dark') ||
                       htmlElement.classList.contains('documenter-dark') ||
@@ -665,7 +665,7 @@ function generate_shiki_javascript(config)
 
         console.log(`🌓 Theme detection: isDark=\${isDark}, classes=\${htmlElement.className}`);
 
-        // ダークテーマが選択されている場合はダークテーマを使用
+        // Use dark theme if dark theme is selected
         const selectedTheme = isDark ? SHIKI_CONFIG.darkTheme : SHIKI_CONFIG.theme;
 
         console.log(`🎨 Using theme: \${selectedTheme} (isDark=\${isDark})`);
@@ -673,7 +673,7 @@ function generate_shiki_javascript(config)
         return selectedTheme;
     }
     
-    // 範囲文字列をパース: "1,3-4" -> [1, 3, 4]
+    // Parse range string: "1,3-4" -> [1, 3, 4]
     function parseHighlightRanges(rangeStr) {
         const ranges = [];
         rangeStr.split(',').forEach(part => {
@@ -693,15 +693,15 @@ function generate_shiki_javascript(config)
         return ranges;
     }
     
-    // 特定の行にハイライトクラスを追加（レベル対応）
+    // Add highlight class to specific lines (with level support)
     function addHighlightToLines(preElement, lineHighlights) {
         const codeElement = preElement.querySelector('code');
         if (!codeElement) return;
-        
-        // Shikiが生成する各行の<span>を取得
+
+        // Get each line <span> generated by Shiki
         const lines = codeElement.querySelectorAll('.line');
-        
-        // lineHighlightsが配列の場合（後方互換性）
+
+        // If lineHighlights is an array (backward compatibility)
         if (Array.isArray(lineHighlights)) {
             lineHighlights.forEach(lineNum => {
                 const lineIndex = lineNum - 1;
@@ -710,7 +710,7 @@ function generate_shiki_javascript(config)
                 }
             });
         } 
-        // lineHighlightsがオブジェクトの場合（レベル付き）
+        // If lineHighlights is an object (with levels)
         else if (typeof lineHighlights === 'object') {
             Object.entries(lineHighlights).forEach(([lineNum, level]) => {
                 const lineIndex = parseInt(lineNum) - 1;
@@ -721,14 +721,14 @@ function generate_shiki_javascript(config)
         }
     }
     
-    // コードブロックのハイライト
+    // Highlight code block
     async function highlightCodeBlock(codeBlock) {
         const pre = codeBlock.parentElement;
-        
-        // 元のコードを保存（data属性に保存されていればそれを使用）
+
+        // Save original code (use from data attribute if stored)
         let code = pre.dataset.originalCode || codeBlock.textContent;
-        
-        // 初回レンダリング時は元のコードと言語を保存
+
+        // Save original code and language on first render
         if (!pre.dataset.originalCode) {
             pre.dataset.originalCode = code;
             const langClass = Array.from(codeBlock.classList).find(cls => cls.startsWith('language-'));
@@ -740,18 +740,18 @@ function generate_shiki_javascript(config)
         const langClass = Array.from(codeBlock.classList).find(cls => cls.startsWith('language-'));
         const lang = langClass ? langClass.replace('language-', '') : 'text';
         
-        // @highlight: 形式の検出
+        // Detect @highlight: format
         let customHighlightLines = {};
         const lines = code.split('\\n');
         let filteredLines = [];
-        let highlightStack = []; // ネストレベルのスタック
+        let highlightStack = []; // Stack for nesting levels
         let lineOffset = 0;
-        
-        // 各行を処理
+
+        // Process each line
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
-            
-            // @highlight: 1,3-4 形式
+
+            // @highlight: 1,3-4 format
             if (i === 0 && line.match(/^\\s*[#\\/\\/]\\s*@highlight:\\s*([\\d,-]+)/)) {
                 const match = line.match(/^\\s*[#\\/\\/]\\s*@highlight:\\s*([\\d,-]+)/);
                 const ranges = parseHighlightRanges(match[1]);
@@ -760,12 +760,12 @@ function generate_shiki_javascript(config)
                 });
                 console.log(`📌 Custom highlight detected: lines \$\${ranges.join(', ')}`);
                 lineOffset++;
-                continue; // この行をスキップ
+                continue; // Skip this line
             }
-            
-            // 行末の@highlight-endを先に処理
+
+            // Process @highlight-end at line end first
             if (line.match(/[#\\/\\/]\\s*@highlight-end\\s*\$/)) {
-                // 現在のハイライトレベルを適用（@highlight-endを処理する前）
+                // Apply current highlight level (before processing @highlight-end)
                 if (highlightStack.length > 0) {
                     const currentLevel = highlightStack[highlightStack.length - 1];
                     customHighlightLines[i - lineOffset + 1] = currentLevel;
@@ -773,41 +773,41 @@ function generate_shiki_javascript(config)
                 }
                 console.log(`🔚 Found @highlight-end at line \$\${i + 1}`);
                 highlightStack.pop();
-                // ディレクティブを削除して行を保持
+                // Remove directive and keep line
                 const cleanedLine = line.replace(/\\s*[#\\/\\/]\\s*@highlight-end\\s*\$/, '');
                 filteredLines.push(cleanedLine);
                 continue;
             }
-            
-            // @highlight-start[level] 形式（行頭または行末）
+
+            // @highlight-start[level] format (at line start or end)
             const startMatch = line.match(/^\\s*[#\\/\\/]\\s*@highlight-start(?:\\[(\\d+)\\])?|[#\\/\\/]\\s*@highlight-start(?:\\[(\\d+)\\])?\\s*\$/);
             if (startMatch) {
                 const level = startMatch[1] || startMatch[2] || 1;
                 const levelNum = typeof level === 'string' ? parseInt(level) : 1;
                 console.log(`🔥 Found @highlight-start[\$\${levelNum}] at line \$\${i + 1}`);
                 highlightStack.push(levelNum);
-                // 行頭の@highlight-startの場合は行全体をスキップ
+                // If @highlight-start at line start, skip entire line
                 if (line.match(/^\\s*[#\\/\\/]\\s*@highlight-start/)) {
                     lineOffset++;
                     continue;
                 }
-                // 行末の@highlight-startの場合は、ディレクティブを削除して行を保持
+                // If @highlight-start at line end, remove directive and keep line
                 const cleanedLine = line.replace(/\\s*[#\\/\\/]\\s*@highlight-start(?:\\[(\\d+)\\])?\\s*\$/, '');
                 filteredLines.push(cleanedLine);
                 continue;
             }
             
-            // 行頭の@highlight-end
+            // @highlight-end at line start
             if (line.match(/^\\s*[#\\/\\/]\\s*@highlight-end/)) {
                 console.log(`🔚 Found @highlight-end at line \$\${i + 1}`);
                 highlightStack.pop();
                 lineOffset++;
-                continue; // この行をスキップ
+                continue; // Skip this line
             }
-            
-            // 現在のハイライトレベルを適用
+
+            // Apply current highlight level
             if (highlightStack.length > 0) {
-                // 最も深いレベル（最後の要素）を使用
+                // Use deepest level (last element)
                 const currentLevel = highlightStack[highlightStack.length - 1];
                 customHighlightLines[i - lineOffset + 1] = currentLevel;
                 console.log(`   📍 Line \$\${i - lineOffset + 1} will be highlighted with level \$\${currentLevel}`);
@@ -969,19 +969,19 @@ function generate_shiki_javascript(config)
                     (mutation.attributeName === 'class' || mutation.attributeName === 'data-theme')) {
                     console.log('🎨 Theme changed, re-highlighting...');
                     
-                    // Highlighterインスタンスをリセット
+                    // Reset highlighter instance
                     highlighterInstance = null;
                     
-                    // 既存のShikiブロックを元の状態に戻す
+                    // Restore existing Shiki blocks to original state
                     const blocks = document.querySelectorAll('pre.shiki');
                     for (const pre of blocks) {
                         const codeElement = pre.querySelector('code');
                         if (codeElement && pre.dataset.originalCode) {
-                            // 元のコードを復元
+                            // Restore original code
                             codeElement.textContent = pre.dataset.originalCode;
-                            // Shikiクラスを削除して再処理可能にする
+                            // Remove Shiki class to allow reprocessing
                             pre.classList.remove('shiki');
-                            // 元のクラスを維持
+                            // Maintain original class
                             const langClass = pre.dataset.originalLang;
                             if (langClass && !codeElement.classList.contains(langClass)) {
                                 codeElement.classList.add(langClass);
@@ -989,36 +989,36 @@ function generate_shiki_javascript(config)
                         }
                     }
                     
-                    // 少し待ってから再ハイライト
+                    // Wait a bit before re-highlighting
                     await new Promise(resolve => setTimeout(resolve, 200));
                     await highlightAllCodeBlocks();
                     break;
                 }
             }
         });
-        
+
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ['class', 'data-theme']
         });
-        
-        // prefers-color-schemeの変更も監視
+
+        // Also monitor prefers-color-scheme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async () => {
             console.log('🌙 System theme changed, re-highlighting...');
-            
-            // Highlighterインスタンスをリセット
+
+            // Reset highlighter instance
             highlighterInstance = null;
-            
-            // 既存のShikiブロックを元の状態に戻す
+
+            // Restore existing Shiki blocks to original state
             const blocks = document.querySelectorAll('pre.shiki');
             for (const pre of blocks) {
                 const codeElement = pre.querySelector('code');
                 if (codeElement && pre.dataset.originalCode) {
-                    // 元のコードを復元
+                    // Restore original code
                     codeElement.textContent = pre.dataset.originalCode;
-                    // Shikiクラスを削除して再処理可能にする
+                    // Remove Shiki class to allow reprocessing
                     pre.classList.remove('shiki');
-                    // 元のクラスを維持
+                    // Maintain original class
                     const langClass = pre.dataset.originalLang;
                     if (langClass && !codeElement.classList.contains(langClass)) {
                         codeElement.classList.add(langClass);
@@ -1026,47 +1026,47 @@ function generate_shiki_javascript(config)
                 }
             }
             
-            // 少し待ってから再ハイライト
+            // Wait a bit before re-highlighting
             await new Promise(resolve => setTimeout(resolve, 200));
             await highlightAllCodeBlocks();
         });
     }
-    
-    // DOM準備完了時に実行
+
+    // Execute when DOM is ready
     function initialize() {
-        // テーマ変更の監視を先に開始
+        // Start monitoring theme changes first
         observeThemeChanges();
-        
-        // 複数のタイミングでハイライトを試行
+
+        // Try highlighting at multiple timings
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 highlightAllCodeBlocks();
             });
         } else {
-            // 即座に実行
+            // Execute immediately
             highlightAllCodeBlocks();
         }
-        
-        // Documenterの初期化完了を待つ
+
+        // Wait for Documenter initialization to complete
         setTimeout(() => {
             highlightAllCodeBlocks();
         }, 250);
-        
-        // さらに遅延させて再実行（フォールバック）
+
+        // Re-execute with more delay (fallback)
         setTimeout(() => {
             highlightAllCodeBlocks();
         }, 1000);
     }
-    
-    // 初期化実行
+
+    // Execute initialization
     initialize();
-    
-    // ページ全体の読み込み完了後も実行
+
+    // Also execute after full page load
     window.addEventListener('load', () => {
         setTimeout(highlightAllCodeBlocks, 100);
     });
-    
-    // グローバルに公開（デバッグ用）
+
+    // Expose globally (for debugging)
     window.ShikiHighlighter = {
         rehighlight: highlightAllCodeBlocks,
         config: SHIKI_CONFIG,
