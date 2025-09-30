@@ -1,4 +1,4 @@
-# GitHub Pages デプロイ用のビルドスクリプト
+# Build script for GitHub Pages deployment
 
 using memoProgClass2025w
 using Documenter
@@ -20,8 +20,8 @@ makedocs(;
         theme="github-light",
         dark_theme="github-dark",
         load_themes=["github-light", "github-dark"],
-        # GitHub Pages用の設定
-        prettyurls=get(ENV, "CI", "false") == "true",  # CI環境では prettyurls を有効化
+        # Settings for GitHub Pages
+        prettyurls=get(ENV, "CI", "false") == "true",  # Enable prettyurls in CI environment
         canonical="https://hsugawa8651.github.io/memoProgClass2025w.jl/",
         edit_link="main",
         assets=String[],
@@ -52,9 +52,9 @@ makedocs(;
     remotes=nothing
 )
 
-# ビルド後にShikiアセットを追加
+# Add Shiki assets after build
 add_shiki_assets("build")
 
-# GitHub Pagesデプロイ用の.nojekyllファイル作成
-# （Jekyllの処理を無効化し、_で始まるファイルも公開する）
+# Create .nojekyll file for GitHub Pages deployment
+# (Disables Jekyll processing and allows publishing files starting with _)
 touch(joinpath(@__DIR__, "build", ".nojekyll"))
