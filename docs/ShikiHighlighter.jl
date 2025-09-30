@@ -923,8 +923,9 @@ function generate_shiki_javascript(config)
         try {
             // highlight.jsのクラスも含めて、全てのコードブロックを選択
             // hljs クラスが付いていても処理する
-            const codeBlocks = document.querySelectorAll('pre:not(.shiki) code[class*="language-"], pre:not(.shiki) code.hljs, pre:not(.shiki) code:not([class])');
-            
+            // julia-repl と nohighlight は除外（Documenterが既に処理済み）
+            const codeBlocks = document.querySelectorAll('pre:not(.shiki) code[class*="language-"]:not(.language-julia-repl):not(.nohighlight), pre:not(.shiki) code.hljs:not(.language-julia-repl):not(.nohighlight), pre:not(.shiki) code:not([class])');
+
             if (codeBlocks.length === 0) {
                 console.log('📄 No unprocessed code blocks found');
                 return;
